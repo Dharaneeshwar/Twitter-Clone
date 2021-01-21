@@ -58,7 +58,6 @@ function Tweetbox() {
             setFile(null);
             setURL(url,upload_tweet());
             console.log(url,{url});
-            
           });
       });
     } else {
@@ -81,7 +80,6 @@ function Tweetbox() {
     });
 
     setTweetMessage("");
-    setTweetImage("");
   };
 
   return (
