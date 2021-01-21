@@ -32,12 +32,11 @@ function Widgets() {
           <p>
           Btw, This is not a complete Twitter clone by any means.<br/> <br/>
            1. Sidebar doesn't work <br/> <br/>
-2. Image Functionality is Half-Baked (Enter Image URL for now) <br/> <br/>
-3. All Tweets are posted under the name Dharaneeshwar. Why not? On a Serious note, Authentication Functionality is yet to be done. <br/> <br/>
+2. All Tweets are posted under the name Dharaneeshwar. Why not? On a Serious note, Authentication Functionality is yet to be done. <br/> <br/>
+3. Tweets with blue verified tick are official messages <br/> <br/>
 4. Search Bar is just an aesthetic element. (No Functionality Done) <br/> <br/>
-5. Like Functionality, Share, Retweet are not done.<br/>
+5. Like, Share, Retweet functionality are not done.<br/>
           </p>
-
         </div>
     </div>
   );

@@ -1,8 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "./Feed.css";
 import Tweetbox from "./Tweetbox/Tweetbox.js";
-import db from "../firebase";
+import firebaseConfig from "../firebase";
+import Firebase from "firebase";
 import Post from "./Post/Post.js";
+
+var firebaseapp = "";
+
+if (!Firebase.apps.length) {
+  firebaseapp = Firebase.initializeApp(firebaseConfig);
+}else {
+  firebaseapp = Firebase.app(); // if already initialized, use that one
+}
+
+const db = firebaseapp.firestore(); 
 
 function Feed() {
   const [posts, setPosts] = useState([]);

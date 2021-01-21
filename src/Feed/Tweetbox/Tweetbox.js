@@ -2,9 +2,23 @@ import React, { useState } from "react";
 import "./Tweetbox.css";
 import { Avatar, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import profile from './profile.jpg';
-import db from '../../firebase';
+import profile from "./profile.jpg";
+import firebaseConfig from "../../firebase";
+import Firebase from "firebase";
+import IconButton from "@material-ui/core/IconButton";
+import PhotoCamera from "@material-ui/icons/PhotoCamera";
 
+var firebaseapp = "";
+
+if (!Firebase.apps.length) {
+    firebaseapp = Firebase.initializeApp(firebaseConfig);
+ }else {
+    firebaseapp = Firebase.app(); // if already initialized, use that one
+ }
+
+const db = firebaseapp.firestore(); 
+
+const storage = firebaseapp.storage()
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,18 +38,45 @@ const useStyles = makeStyles((theme) => ({
 function Tweetbox() {
   const [tweetMessage, setTweetMessage] = useState("");
   const [tweetImage, setTweetImage] = useState("");
+  const [file, setFile] = useState(null);
+  const [url, setURL] = useState("");
   const classes = useStyles();
 
-  const upload_tweet = (e) => {
-    e.preventDefault();
+  function handleChange(e) {
+    setFile(e.target.files[0]);
+  }
 
+  function handleUpload(e) {
+    e.preventDefault();
+    if (file){
+      const uploadTask = storage.ref(`/images/${file.name}`).put(file);
+      uploadTask.on("state_changed", console.log, console.error, () => {
+        storage
+          .ref("images")
+          .child(file.name)
+          .getDownloadURL()
+          .then((url) => {
+            setFile(null);
+            setURL(url,upload_tweet());
+            console.log(url,{url});
+            
+          });
+      });
+    } else {
+      setURL(""); 
+      upload_tweet();
+    }
+
+  }
+
+  const upload_tweet = (e) => {
     db.collection("posts").add({
       id: Date.now(),
       displayName: "Dharaneeshwar",
       username: "daranip",
       verified: false,
       text: tweetMessage,
-      image: tweetImage,
+      image: {url}.url,
       avatar:
         "https://firebasestorage.googleapis.com/v0/b/twitter-clone-30cf3.appspot.com/o/Dharani%20Profile%20Pic.jpg?alt=media&token=216e38b8-371e-4895-98d0-ef0f4ea7df5c",
     });
@@ -48,28 +89,33 @@ function Tweetbox() {
     <div className="tweetBox">
       <form>
         <div className="tweetBox__input">
-        <Avatar src={profile} alt="profile" className={classes.blue}/>
-          <input 
-          onChange={(e) => setTweetMessage(e.target.value)}
-          value={tweetMessage}
-          placeholder="What's up?" 
-          type="text" />
+          <Avatar src={profile} alt="profile" className={classes.blue} />
+          <input
+            onChange={(e) => setTweetMessage(e.target.value)}
+            value={tweetMessage}
+            placeholder="What's up?"
+            type="text"
+          />
         </div>
-        <input
-          onChange={(e) => setTweetImage(e.target.value)}
-          value={tweetImage}
-          className="tweetBox__imageInput"
-          placeholder="Image Link"
-          type="text"
-        />
         <div className="tweetBox__Buttons">
-        {/* <input accept="image/*" className="file-input-hide" id="icon-button-file" type="file" />
+          <input
+            onChange={handleChange}
+            accept="image/*"
+            className="file-input-hide"
+            id="icon-button-file"
+            type="file"
+          />
           <label htmlFor="icon-button-file">
-          <IconButton aria-label="upload picture" component="span">
-            <PhotoCamera className="tweetBox__upload" />
-          </IconButton>
-          </label> */}
-          <Button onClick={upload_tweet} type="submit" className="tweetBox__tweetButton" fullWidth>
+            <IconButton aria-label="upload picture" component="span">
+              <PhotoCamera className="tweetBox__upload" />
+            </IconButton>
+          </label>
+          <Button
+            onClick={handleUpload}
+            type="submit"
+            className="tweetBox__tweetButton"
+            fullWidth
+          >
             Tweet
           </Button>
         </div>
