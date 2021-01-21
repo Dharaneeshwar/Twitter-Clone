@@ -37,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
 
 function Tweetbox() {
   const [tweetMessage, setTweetMessage] = useState("");
-  const [tweetImage, setTweetImage] = useState("");
   const [file, setFile] = useState(null);
   const [url, setURL] = useState("");
   const classes = useStyles();
